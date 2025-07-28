@@ -47,11 +47,21 @@ jobs:
           git init
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
+          # ✅ Git LFS 활성화 및 큰 파일 추적
+          git lfs install
+          git lfs track "*.wasm"
+          git lfs track "*.woff2"
+          git lfs track "*.woff"
+          git lfs track "*.ttf"
+          echo ".gitattributes created:"
+          cat .gitattributes
+
+          git add .gitattributes
           git add .
-          git commit -m "Deploy build folder"
+          git commit -m "Deploy build folder (with Git LFS)"
           git branch -M main
 
-          echo "✅ Adding remote with HF_TOKEN..."
+          echo "✅ Adding remote..."
           git remote add origin https://oauth2:$HF_TOKEN@huggingface.co/spaces/conc1se/winwin_evidence.git
 
           echo "✅ Pushing to Hugging Face..."
