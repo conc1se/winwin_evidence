@@ -30,10 +30,8 @@ jobs:
           ls -la deploy
 
       - name: ✅ Debug: Check HF_TOKEN and repo URL
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          if [ -z "$HF_TOKEN" ]; then
+          if [ -z "${{ secrets.HF_TOKEN }}" ]; then
             echo "❌ HF_TOKEN is NOT set!"
             exit 1
           else
