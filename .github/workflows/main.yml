@@ -3,66 +3,48 @@ name: Deploy build to Hugging Face
 on:
   push:
     branches:
-      - main  # main 브랜치 푸시 시 실행
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ✅ Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          lfs: true  # 여기서도 Git LFS 활성화
 
-      - name: ✅ Install dependencies and build
+      - name: Install dependencies and build
         run: |
-          echo "Installing dependencies..."
           npm install
-          echo "Building project..."
           npm run build
 
-      - name: ✅ Prepare deploy folder
+      - name: Prepare deploy folder
         run: |
-          echo "Preparing deploy folder..."
           mkdir deploy
           cp -r build/* deploy/
           cp Dockerfile deploy/
-          echo "Deploy folder content:"
-          ls -la deploy
 
-      - name: ✅ Debug Check HF_TOKEN and repo URL
-        run: |
-          if [ -z "${{ secrets.HF_TOKEN }}" ]; then
-            echo "❌ HF_TOKEN is NOT set!"
-            exit 1
-          else
-            echo "✅ HF_TOKEN is set (masked)"
-          fi
-          echo "Hugging Face target: https://huggingface.co/spaces/conc1se/winwin_evidence.git"
-
-      - name: ✅ Push to Hugging Face Space
+      - name: Push to Hugging Face Space with Git LFS
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           cd deploy
           git init
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          # ✅ Git LFS 활성화 및 큰 파일 추적
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
           git lfs install
           git lfs track "*.wasm"
           git lfs track "*.woff2"
           git lfs track "*.woff"
           git lfs track "*.ttf"
-          echo ".gitattributes created:"
-          cat .gitattributes
-
           git add .gitattributes
+
           git add .
-          git commit -m "Deploy build folder (with Git LFS)"
+          git commit -m "Deploy build folder with Git LFS"
           git branch -M main
 
-          echo "✅ Adding remote..."
           git remote add origin https://oauth2:$HF_TOKEN@huggingface.co/spaces/conc1se/winwin_evidence.git
-
-          echo "✅ Pushing to Hugging Face..."
           git push --force origin main
