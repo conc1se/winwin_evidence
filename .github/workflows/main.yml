@@ -29,7 +29,7 @@ jobs:
           echo "Deploy folder content:"
           ls -la deploy
 
-      - name: ✅ Debug: Check HF_TOKEN and repo URL
+      - name: ✅ Debug Check HF_TOKEN and repo URL
         run: |
           if [ -z "${{ secrets.HF_TOKEN }}" ]; then
             echo "❌ HF_TOKEN is NOT set!"
