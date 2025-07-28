@@ -3,7 +3,7 @@ name: Deploy build to Hugging Face
 on:
   push:
     branches:
-      - main  # main 브랜치에 push 시 실행
+      - main
 
 jobs:
   deploy:
@@ -18,7 +18,7 @@ jobs:
           npm install
           npm run build
 
-      - name: Prepare Hugging Face deploy folder
+      - name: Prepare deploy folder
         run: |
           mkdir deploy
           cp -r build/* deploy/
@@ -33,13 +33,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git add .
-          git commit -m "Deploy build folder to Hugging Face"
+          git commit -m "Deploy build folder"
           git branch -M main
-          git remote add origin https://huggingface.co/spaces/conc1se/winwin_evidence
-          git push --force https://$HF_TOKEN@huggingface.co/spaces/conc1se/winwin_evidence main
-
-
-
-
-
-
+          git remote add origin https://$HF_TOKEN@huggingface.co/spaces/conc1se/winwin_evidence.git
+          git push --force origin main
