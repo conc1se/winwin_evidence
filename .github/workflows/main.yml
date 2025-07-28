@@ -1,0 +1,27 @@
+name: Deploy to Hugging Face Space
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'build/**'  # myapp 폴더에 변경이 있을 때만 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Push myapp folder to Hugging Face Space
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+
+          # subtree 브랜치 생성
+          git subtree split --prefix myapp -b deploy-branch
+
+          # Hugging Face Space로 푸시 (HF_TOKEN은 GitHub Secrets에 저장)
+          git push https://username:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/conc1se/winwin_evidence deploy-branch:main --force
