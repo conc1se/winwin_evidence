@@ -52,7 +52,7 @@ jobs:
           git branch -M main
 
           echo "✅ Adding remote with HF_TOKEN..."
-          git remote add origin https://$HF_TOKEN@huggingface.co/spaces/conc1se/winwin_evidence.git
+          git remote add origin https://oauth2:$HF_TOKEN@huggingface.co/spaces/conc1se/winwin_evidence.git
 
           echo "✅ Pushing to Hugging Face..."
           git push --force origin main
